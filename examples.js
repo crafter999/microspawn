@@ -32,7 +32,7 @@ async function example3() {
    if [ "$test" = "hello" ]; then
       echo "world"
    fi`;
-   let result = await test.script(script,"helloArg").catch(e => {
+   let result = await test.script(script).catch(e => {
       console.error(e);
       process.exit(1);
    });
