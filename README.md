@@ -46,3 +46,19 @@ async function example2() {
       process.exit(1);
    });
 ```
+
+Example #3: Run inline script (shell arguments don't work)
+```
+let test = new microspawn();
+let arg = "hello";
+let script = `test="${arg}"
+if [ "$test" = "hello" ]; then
+  echo "world"
+fi`;
+let result = await test.script(script,"helloArg").catch(e => {
+  console.error(e);
+  process.exit(1);
+});
+
+console.log(result);
+```

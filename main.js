@@ -10,7 +10,7 @@ class microspawn {
 
    run(program, arrayOfArgs = []) {
       // convert string args to array
-      if (typeof arrayOfArgs === "string"){
+      if (typeof arrayOfArgs === "string") {
          arrayOfArgs = arrayOfArgs.split(" ");
       }
       return new Promise((resProm, rejProm) => {
@@ -21,20 +21,20 @@ class microspawn {
          let chunkError = "";
 
          // start listening for events
-         child.stdout.on("data", (data)=> {
+         child.stdout.on("data", (data) => {
             chunk += data;
          });
-         child.stderr.on("data", (data)=> {
+         child.stderr.on("data", (data) => {
             // treat stderr like stdout for special occasions
             if (!this.stderr)
-               chunk+= data;
+               chunk += data;
             else
                chunkError += data;
          });
-         child.on("error", (e)=> {
+         child.on("error", (e) => {
             rejProm(e);
          });
-         child.on("close", (/* optional_code */)=> {
+         child.on("close", (/* optional_code */) => {
             // check for errors
             if (chunkError === "") {
                resProm(chunk.toString());
@@ -52,6 +52,10 @@ class microspawn {
          process.exit(1);
       });
       console.log(result);
+   }
+
+   async script(scriptContents) {
+      return this.run("/bin/sh", ["-c", scriptContents]);
    }
 }
 

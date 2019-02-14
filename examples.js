@@ -23,3 +23,19 @@ async function example2() {
       process.exit(1);
    });
 }
+
+async function example3() {
+   // run inline script with arguments (shell arguments don't work)
+   let test = new microspawn();
+   let arg = "hello";
+   let script = `test="${arg}"
+   if [ "$test" = "hello" ]; then
+      echo "world"
+   fi`;
+   let result = await test.script(script,"helloArg").catch(e => {
+      console.error(e);
+      process.exit(1);
+   });
+
+   console.log(result);
+}
