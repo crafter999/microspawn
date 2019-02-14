@@ -23,4 +23,3 @@ async function example2() {
       process.exit(1);
    });
 }
-example1()

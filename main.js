@@ -14,12 +14,6 @@ class microspawn {
          arrayOfArgs = arrayOfArgs.split(" ");
       }
       return new Promise((resProm, rejProm) => {
-         // type check
-         if (typeof program!=="string" || !Array.isArray(arrayOfArgs)){
-            rejProm(new TypeError("Invalid arguments. run() " +
-               "should be string and an array"));
-         }
-
          // run command
          let child = spawn(program, arrayOfArgs, this._options);
 
