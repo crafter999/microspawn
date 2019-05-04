@@ -10,10 +10,10 @@ expand it cause it's not like a library or something.
 #### new microspawn(optional_options:object)
 Initialize a new microspawn object. Options can be found at the following link: https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
 
-#### + run(command:string, args:string || args:array)
-Returns a promise which contains the result back from the stream
+#### + run(command:string, args:string | args:array) : promise
+Returns a **promise** which contains the result back from the stream
 
-#### + log(command:string, args:string || args:array)
+#### + log(command:string, args:string | args:array) : void 
 Simple void method which executes & logs a command
 
 #### + stderr: bool => default:true

@@ -1,6 +1,6 @@
 {
   "name": "microspawn",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Spawn some nasty processes on node.js",
   "main": "main.js",
   "scripts": {
@@ -16,7 +16,10 @@
   "keywords": [
     "nodejs",
     "child process",
-    "spawn"
+    "spawn",
+    "run scripts",
+    "execute command",
+    "shell"
   ],
   "author": "N.Drakos",
   "license": "GPL-3.0",

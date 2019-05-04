@@ -8,19 +8,29 @@ class microspawn {
       this.stderr = true;
    }
 
-   run(program, arrayOfArgs = []) {
-      // convert string args to array
-      if (typeof arrayOfArgs === "string") {
-         arrayOfArgs = arrayOfArgs.split(" ");
-      }
+   run(program, args = []) {
       return new Promise((resProm, rejProm) => {
+         // convert string args to array
+         if (typeof args === "string") {
+            // support escaping
+            if (args.includes('"') || args.includes("'")) {
+               args = this._escapeArgs(args);
+            } else {
+               args = args.split(" ");
+            }
+
+         }
+
+         // trim empty args
+         args = args.filter(e => e);
+
          // run command
-         let child = spawn(program, arrayOfArgs, this._options);
+         let child = spawn(program, args, this._options);
 
          let chunk = "";
          let chunkError = "";
 
-         // start listening for events
+         // start listening
          child.stdout.on("data", (data) => {
             chunk += data;
          });
@@ -56,6 +66,24 @@ class microspawn {
 
    async script(scriptContents) {
       return this.run("/bin/sh", ["-c", scriptContents]);
+   }
+
+   _escapeArgs(args) {
+      let result = [];
+      let escaped = args.match(/("|')(.*?)("|')/g);
+      let quotesHack = args.replace(/("|')(.*?)("|')/g, " quotes ").split(" ");
+
+      for (let q of quotesHack) {
+         for (let m = 0; m <= escaped.length; m++) {
+            if (q === "quotes" && escaped[m]!=="") {
+               q = escaped[m];
+               escaped[m] = ""; // *remove* it from queue
+            }
+         }
+         result.push(q);
+      }
+
+      return result;
    }
 }
 
