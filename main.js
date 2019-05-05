@@ -1,5 +1,3 @@
-// Copyright (C) 2018  N. Drakos
-
 const spawn = require("child_process").spawn;
 
 class microspawn {

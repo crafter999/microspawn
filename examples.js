@@ -1,5 +1,3 @@
-// Copyright (C) 2018  N. Drakos
-
 const microspawn = require("./main");
 
 // example #1

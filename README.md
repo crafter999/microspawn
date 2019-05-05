@@ -1,7 +1,7 @@
 [![Node Version](https://img.shields.io/badge/node.js%20-%3E%3D9.0.0-brightgreen.svg)](https://nodejs.org/en/download/current/)
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-Microspawn is a basic tiny piece of code which contains some methods that can be
+Microspawn is a basic tiny piece of code with **0 dependencies** which contains some methods that can be
 really useful & handy when it comes to running commands using node.js. I'm not intend to
 expand it cause it's not like a library or something.
 
