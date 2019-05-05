@@ -117,7 +117,14 @@ class microspawn {
       process.exit(1);
    }
 
+   // pseudo-flexible static methods for lazy calls
+   static run(program, args = [], opts = {}) {
+      return new microspawn(opts).run(program, args);
+   }
 
+   static stream(program, args = [], opts = {}) {
+      return new microspawn(opts).stream(program, args);
+   }
 }
 
 module.exports = microspawn;
