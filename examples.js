@@ -41,6 +41,7 @@ function example4() {
    let nodejsPath = process.platform === "linux" ? "/usr/bin/node" : "C:\\node.exe";
    const nodeInception = "\"var i=0;setInterval(()=>{process.stdout.write(i.toString());i++},1000);\"";
    const nodeInception2 = "\"for(let x=0;x<=999999;x++){console.log(x);}\"";
+   const nodeInception3 = "\"setTimeout(()=>{console.log('hello'+'world')},1000)\"";
    let streamFromStd = microspawn.stream(nodejsPath,
       `-e ${nodeInception2}`, {shell: true});
 

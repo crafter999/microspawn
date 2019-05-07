@@ -54,6 +54,8 @@ class microspawn {
 
    // read only stream
    stream(program, args = []) {
+      this._options.shell = true;
+
       // convert string args to array
       args = this._stringToArray(args);
 
@@ -68,7 +70,9 @@ class microspawn {
          this._exit(e)
       });
       child.on("close", (/* optional_code */) => {
-         chunkError === "" ? process.exit(0) : this._exit(chunkError);
+         if (chunkError !== "") {
+            this._exit(chunkError);
+         }
       });
 
       return child.stdout;
@@ -92,20 +96,26 @@ class microspawn {
 
    _escapeArgs(args) {
       let result = [];
-      let escaped = args.match(/("|')(.*?)("|')/g);
-      let quotesHack = args.replace(/("|')(.*?)("|')/g, " quotes ").split(" ");
+      let escaped = args.match(/("(.*?)")|('(.*?)')/g);
+      let quotesHack = args.replace(/("(.*?)")|('(.*?)')/g, "_$quotes$_").split(" ");
+
+      if (!escaped){
+         return args;
+      }
+
+      if (escaped.length>1){
+         this._exit(new Error("Error while escaping string quotes. " +
+            "Please wrap with double quotes and use single quotes inside. Or anything opposite from this\n\n" +
+            "Example: \"-e \\\"console.log('hello world');\\\"\""))
+      }
 
       for (let q of quotesHack) {
          for (let m = 0; m <= escaped.length; m++) {
-            if (q === "quotes" && escaped[m] !== "") {
+            if (q === "_$quotes$_" && escaped[m] !== "") {
                q = escaped[m];
                escaped[m] = ""; // *remove* it from queue
             }
          }
-         // strange windows bug: replace single quotes with double
-         if (process.platform === "win32")
-            q = q.replace(/'/g, '"');
-
          result.push(q);
       }
 
@@ -118,12 +128,20 @@ class microspawn {
    }
 
    // pseudo-flexible static methods for lazy calls
-   static run(program, args = [], opts = {}) {
+   static async run(program, args = [], opts = {}) {
       return new microspawn(opts).run(program, args);
    }
 
    static stream(program, args = [], opts = {}) {
       return new microspawn(opts).stream(program, args);
+   }
+
+   static async log(program, args = [], opts = {}) {
+      await new microspawn(opts).log(program, args);
+   }
+
+   static async script(scriptContents, opts= {}) {
+      return new microspawn(opts).script(scriptContents);
    }
 }
 
