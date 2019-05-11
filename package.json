@@ -1,6 +1,6 @@
 {
   "name": "microspawn",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Spawn some nasty processes on node.js",
   "main": "main.js",
   "scripts": {

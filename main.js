@@ -1,18 +1,13 @@
 const spawn = require("child_process").spawn;
 
-class microspawn {
-   constructor(options = {}) {
-      this._options = options;
-      this.stderr = true;
-   }
-
-   run(program, args = []) {
+class Microspawn {
+   static run(program, args = [], options = {}, stderr = true) {
       return new Promise((resProm, rejProm) => {
          // convert string args to array
          args = this._stringToArray(args);
 
          // run command
-         let child = spawn(program, args, this._options);
+         let child = spawn(program, args, options);
 
          let chunk = "";
          let chunkError = "";
@@ -23,7 +18,7 @@ class microspawn {
          });
          child.stderr.on("data", (data) => {
             // treat stderr like stdout for special occasions
-            if (!this.stderr)
+            if (!stderr)
                chunk += data;
             else
                chunkError += data;
@@ -43,24 +38,24 @@ class microspawn {
    }
 
    // execute & log out the result
-   async log(program, args) {
-      let result = await this.run(program, args).catch(e => this._exit(e));
+   static async log(program, args, options) {
+      let result = await this.run(program, args, options).catch(e => this._exit(e));
       console.log(result);
    }
 
-   async script(scriptContents) {
+   static async script(scriptContents) {
       return this.run("/bin/sh", ["-c", scriptContents]);
    }
 
    // read only stream
-   stream(program, args = []) {
-      this._options.shell = true;
+   static stream(program, args = [], options = {}) {
+      options.shell = true;
 
       // convert string args to array
       args = this._stringToArray(args);
 
       // run command
-      let child = spawn(program, args, this._options);
+      let child = spawn(program, args, options);
 
       let chunkError = "";
       child.stderr.on("data", (e) => {
@@ -78,7 +73,7 @@ class microspawn {
       return child.stdout;
    }
 
-   _stringToArray(args) {
+   static _stringToArray(args) {
       if (typeof args === "string") {
          // support escaping
          if (args.includes('"') || args.includes("'")) {
@@ -94,16 +89,16 @@ class microspawn {
       return args;
    }
 
-   _escapeArgs(args) {
+   static _escapeArgs(args) {
       let result = [];
       let escaped = args.match(/("(.*?)")|('(.*?)')/g);
       let quotesHack = args.replace(/("(.*?)")|('(.*?)')/g, "_$quotes$_").split(" ");
 
-      if (!escaped){
+      if (!escaped) {
          return args;
       }
 
-      if (escaped.length>1){
+      if (escaped.length > 1) {
          this._exit(new Error("Error while escaping string quotes. " +
             "Please wrap with double quotes and use single quotes inside. Or anything opposite from this\n\n" +
             "Example: \"-e \\\"console.log('hello world');\\\"\""))
@@ -122,27 +117,10 @@ class microspawn {
       return result;
    }
 
-   _exit(e) {
+   static _exit(e) {
       console.error(e);
       process.exit(1);
    }
-
-   // pseudo-flexible static methods for lazy calls
-   static async run(program, args = [], opts = {}) {
-      return new microspawn(opts).run(program, args);
-   }
-
-   static stream(program, args = [], opts = {}) {
-      return new microspawn(opts).stream(program, args);
-   }
-
-   static async log(program, args = [], opts = {}) {
-      await new microspawn(opts).log(program, args);
-   }
-
-   static async script(scriptContents, opts= {}) {
-      return new microspawn(opts).script(scriptContents);
-   }
 }
 
-module.exports = microspawn;
+module.exports = Microspawn;

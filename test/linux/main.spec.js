@@ -45,7 +45,7 @@ it('should run command in stream mode and return hello', async () => {
 
 it('should return the an array with 3 elements', () => {
    let args = "";
-   let test = new ms({})._escapeArgs(args);
+   let test = ms._escapeArgs(args);
    expect(test)
 });
 
