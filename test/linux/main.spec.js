@@ -1,4 +1,5 @@
 const ms = require("../../main");
+const assert = require("assert");
 
 // hack block for the event loop (useful for the events)
 let hackSleep = new Promise((res) => {
@@ -43,10 +44,24 @@ it('should run command in stream mode and return hello', async () => {
    await hackSleep;
 });
 
-it('should return the an array with 3 elements', () => {
-   let args = "";
+it('should return an array with 6 specific elements', () => {
+   let args = "--log 'meow meow' --doSomething --myvar=\"Hello World\" --anotherArg \"This works too\"";
    let test = ms._escapeArgs(args);
-   expect(test)
+   assert.deepStrictEqual(test.length,6);
+   assert.deepStrictEqual(test[0], '--log');
+   assert.deepStrictEqual(test[1], "'meow meow'");
+   assert.deepStrictEqual(test[2], '--doSomething');
+   assert.deepStrictEqual(test[3], '--myvar="Hello World"');
+   assert.deepStrictEqual(test[4], '--anotherArg');
+   assert.deepStrictEqual(test[5], '"This works too"');
+});
+
+it('should return an array with 2 specific elements', () => {
+   let args = "'arg1 here' \"arg2 here\"";
+   let test = ms._escapeArgs(args);
+   assert.deepStrictEqual(test.length,2);
+   assert.deepStrictEqual(test[0],"'arg1 here'");
+   assert.deepStrictEqual(test[1], '"arg2 here"');
 });
 
 afterEach(() => {

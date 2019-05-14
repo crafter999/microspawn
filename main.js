@@ -92,22 +92,16 @@ class Microspawn {
    static _escapeArgs(args) {
       let result = [];
       let escaped = args.match(/("(.*?)")|('(.*?)')/g);
-      let quotesHack = args.replace(/("(.*?)")|('(.*?)')/g, "_$quotes$_").split(" ");
+      let quotesHack = args.replace(/("(.*?)")|('(.*?)')/g, "_$quotes$_");
 
       if (!escaped) {
          return args;
       }
 
-      if (escaped.length > 1) {
-         this._exit(new Error("Error while escaping string quotes. " +
-            "Please wrap with double quotes and use single quotes inside. Or anything opposite from this\n\n" +
-            "Example: \"-e \\\"console.log('hello world');\\\"\""))
-      }
-
-      for (let q of quotesHack) {
+      for (let q of quotesHack.split(" ")) {
          for (let m = 0; m <= escaped.length; m++) {
-            if (q === "_$quotes$_" && escaped[m] !== "") {
-               q = escaped[m];
+            if (q.includes("_$quotes$_") && escaped[m] !== "") {
+               q = q.replace("_$quotes$_",escaped[m]);
                escaped[m] = ""; // *remove* it from queue
             }
          }
