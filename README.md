@@ -8,8 +8,7 @@ npm install microspawn
 
 ## Usage
 + **run**(program: string, args: string[] | string, options?: SpawnOptions, stderr?: boolean): Promise<string>  
-_Returns the `stdout` **Event** that will be triggered when the process output some data.   
-WARNING: It will be terminated if the process output error._
+_Returns a **promise** which contains the output._
 
 + **log**(program: string, args: string[] | string, options?: 
 [SpawnOptions](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options)): void  
