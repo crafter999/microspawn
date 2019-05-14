@@ -12,7 +12,7 @@ _Returns a **promise** which contains the output._
 
 + **log**(program: string, args: string[] | string, options?: 
 [SpawnOptions](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options)): void  
-_Return a **promise** which contains the result back from the stream_
+_Log the output, nothing fancy_
 
 + **script**(scriptContents: string): Promise<string>  
 _Run a **Linux** script using `/bin/sh`  
