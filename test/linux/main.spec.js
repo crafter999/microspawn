@@ -1,5 +1,6 @@
 const ms = require("../../main");
 const assert = require("assert");
+const exit = jest.spyOn(process, 'exit').mockImplementation(() => {});
 
 // hack block for the event loop (useful for the events)
 let hackSleep = new Promise((res) => {
@@ -19,8 +20,8 @@ it('should reject promise', async () => {
 });
 
 it('should reject the falsy process', async () => {
-   let test = ms.run("/usr/bin/nodejs", "-e \"process.stderr.write('error')\"", {shell: true});
-   await expect(test).rejects.toBe("error");
+   let test = await ms.run("/usr/bin/nodejs", "-e \"process.stderr.write('error')\"", {shell: true});
+   expect(test).rejects.toThrowError
 });
 
 it('should print out \'hello\'', async () => {
@@ -37,11 +38,10 @@ it('should run script and return 10', async () => {
 });
 
 it('should run command in stream mode and return hello', async () => {
-   let startListening = ms.stream("/usr/bin/nodejs", "-e \"console.log('hello')\"");
+   let startListening = ms.stream("/usr/bin/node", "-e \"console.log('hello')\"",{}, true);
    startListening.on("data", (data) => {
       expect(data.toString().trim()).toBe("hello");
    });
-   await hackSleep;
 });
 
 it('should return an array with 6 specific elements', () => {
@@ -63,6 +63,16 @@ it('should return an array with 2 specific elements', () => {
    assert.deepStrictEqual(test[0],"'arg1 here'");
    assert.deepStrictEqual(test[1], '"arg2 here"');
 });
+
+it('should exit process on error', async ()=>{
+   ms.stream("/usr/bin/node", "-e \"xx9x9x@$9x9$x9_dumb(;)\"",{}, true, true);
+   await hackSleep;
+   expect(exit).toHaveBeenCalledWith(1)
+})
+
+it ('should not exit process on error or close', async ()=>{
+   ms.stream("/usr/bin/node", "-e \"xx9x9x@$9x9$x9_dumb(;)\"",{}, false,true);
+})
 
 afterEach(() => {
    jest.clearAllMocks();

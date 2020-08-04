@@ -1,7 +1,7 @@
 const spawn = require("child_process").spawn;
 
 class Microspawn {
-   static run(program, args = [], options = {}, stderr = true) {
+   static run(program, args = [], options = {}, stderr = false) {
       return new Promise((resProm, rejProm) => {
          // convert string args to array
          args = this._stringToArray(args);
@@ -48,7 +48,7 @@ class Microspawn {
    }
 
    // read only stream
-   static stream(program, args = [], options = {}) {
+   static stream(program, args = [], options = {}, exitOrErrorOrClose = false, silent = false) {
       options.shell = true;
 
       // convert string args to array
@@ -61,12 +61,25 @@ class Microspawn {
       child.stderr.on("data", (e) => {
          chunkError += e;
       });
+      
       child.on("error", (e) => {
-         this._exit(e)
+         if (exitOrErrorOrClose){
+            this._exit(e, silent)
+         } else {
+            if (!silent){
+               console.error(e);
+            }
+         }
       });
       child.on("close", (/* optional_code */) => {
          if (chunkError !== "") {
-            this._exit(chunkError);
+            if (exitOrErrorOrClose){
+               this._exit(chunkError,silent)
+            } else {
+               if (!silent){
+                  console.error(chunkError);
+               }
+            }
          }
       });
 
@@ -111,8 +124,10 @@ class Microspawn {
       return result;
    }
 
-   static _exit(e) {
-      console.error(e);
+   static _exit(e,silent=true) {
+      if (!silent){
+         console.error(e);
+      }
       process.exit(1);
    }
 }

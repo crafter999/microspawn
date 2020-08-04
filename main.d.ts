@@ -8,5 +8,6 @@ export declare function log(program: string, args?: string[] | string, options?:
 
 export declare function script(scriptContents: string): Promise<string>;
 
-export declare function stream(program: string, args: string[] | string, options?: SpawnOptions): Readable;
+export declare function stream(program: string, args: string[] | string, options?: SpawnOptions,
+    exitOrErrorOrClose?: boolean, silent?:boolean): Readable;
 
